@@ -29,4 +29,4 @@ jobs:
           SEATGEEK_CLIENT_ID: ${{ secrets.SEATGEEK_CLIENT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           TARGET_PRICE: ${{ vars.TARGET_PRICE }}
-        run: python bends_ticket_watch.py --once
+        run: python "bends ticket watch.py"
