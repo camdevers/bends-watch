@@ -1,0 +1,32 @@
+name: Bends ticket watch
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: Restore last-alert state
+        uses: actions/cache@v4
+        with:
+          path: state.json
+          key: bends-state-${{ github.run_id }}
+          restore-keys: bends-state-
+
+      - name: Check prices
+        env:
+          SEATGEEK_CLIENT_ID: ${{ secrets.SEATGEEK_CLIENT_ID }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TARGET_PRICE: ${{ vars.TARGET_PRICE }}
+        run: python bends_ticket_watch.py --once
